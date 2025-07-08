@@ -1,0 +1,119 @@
+methods:
+  - name: "Current User"
+    category: "reconnaissance"
+    description: "Identify the currently logged-in user"
+    command: "whoami"
+    indicators: ["\\"]
+    priority: 1
+
+  - name: "User Privileges"
+    category: "reconnaissance"
+    description: "List privileges assigned to the current user"
+    command: "whoami /priv"
+    indicators: ["Se", "Enabled"]
+    priority: 1
+
+  - name: "Group Membership"
+    category: "reconnaissance"
+    description: "Check group memberships for privilege escalation potential"
+    command: "whoami /groups"
+    indicators: ["Administrators", "BUILTIN\\Administrators"]
+    priority: 1
+
+  - name: "System Version & Domain"
+    category: "system"
+    description: "Gather OS version and domain info"
+    command: "systeminfo | findstr /B /C:\"OS Name\" /C:\"OS Version\" /C:\"Domain\""
+    indicators: ["Microsoft", "Domain"]
+    priority: 2
+
+  - name: "Hostname"
+    category: "system"
+    description: "Identify system hostname"
+    command: "hostname"
+    indicators: ["DESKTOP", "WIN"]
+    priority: 2
+
+  - name: "Network Configuration"
+    category: "network"
+    description: "Display detailed IP and adapter information"
+    command: "ipconfig /all"
+    indicators: ["IPv4", "Gateway"]
+    priority: 2
+
+  - name: "Network Routes"
+    category: "network"
+    description: "Enumerate route table for pivoting potential"
+    command: "route print"
+    indicators: ["0.0.0.0", "Default"]
+    priority: 3
+
+  - name: "ARP Table"
+    category: "network"
+    description: "View ARP table for internal network mapping"
+    command: "arp -a"
+    indicators: ["dynamic", "static"]
+    priority: 3
+
+  - name: "Running Services"
+    category: "services"
+    description: "List all currently running services"
+    command: "sc query"
+    indicators: ["SERVICE_NAME"]
+    priority: 2
+
+  - name: "Service Details"
+    category: "services"
+    description: "Get full service configuration"
+    command: "wmic service get name,displayname,startmode,state,pathname"
+    indicators: ["Auto", "Manual"]
+    priority: 2
+
+  - name: "Startup Programs (Registry)"
+    category: "registry"
+    description: "Check auto-start programs via registry"
+    command: "reg query HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"
+    indicators: ["REG_SZ", "AutoRun"]
+    priority: 3
+
+  - name: "Scheduled Tasks"
+    category: "tasks"
+    description: "Enumerate scheduled tasks and owners"
+    command: "schtasks /query /fo LIST /v"
+    indicators: ["TaskName", "Run As User"]
+    priority: 3
+
+  - name: "Local Users"
+    category: "user"
+    description: "List all local user accounts"
+    command: "net user"
+    indicators: ["Administrator", "Guest"]
+    priority: 2
+
+  - name: "Local Groups"
+    category: "user"
+    description: "List local groups"
+    command: "net localgroup"
+    indicators: ["Administrators", "Remote Desktop Users"]
+    priority: 2
+
+  - name: "Logged In Sessions"
+    category: "user"
+    description: "View all user sessions on system"
+    command: "query user"
+    indicators: ["Active", "Disc"]
+    priority: 2
+
+  - name: "Process Listing"
+    category: "process"
+    description: "List all active processes"
+    command: "tasklist /v"
+    indicators: ["Image Name", "PID", "User Name"]
+    priority: 3
+
+  - name: "Shared Resources"
+    category: "network"
+    description: "Enumerate shared folders and resources"
+    command: "net share"
+    indicators: ["C$", "ADMIN$"]
+    priority: 3

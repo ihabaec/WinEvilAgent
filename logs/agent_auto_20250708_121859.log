@@ -1,0 +1,27 @@
+2025-07-08 12:18:59 - pentest_agent.winrm_client - INFO - ✅ Connected to 192.168.56.110:5985
+2025-07-08 12:18:59 - pentest_agent.agent - INFO - 🚀 Starting Intelligent Penetration Testing Agent
+2025-07-08 12:18:59 - pentest_agent.agent - INFO - 🎯 Objective: Gain administrator privileges and create C:\Windows\System32\rooted
+2025-07-08 12:18:59 - pentest_agent.agent - INFO - ======================================================================
+2025-07-08 12:18:59 - pentest_agent.agent - INFO - 
+📍 Current Phase: RECONNAISSANCE
+2025-07-08 12:18:59 - pentest_agent.agent - INFO - 🔍 Executing reconnaissance phase...
+2025-07-08 12:18:59 - pentest_agent.agent - INFO - 🔍 Analyzing basic system information...
+2025-07-08 12:19:01 - pentest_agent.winrm_client - WARNING - Command failed (Status 1): systeminfo | findstr /B /C:"OS Name" /C:"OS Versio... StdErr: 
+2025-07-08 12:19:01 - pentest_agent.winrm_client - INFO - Retrying in 2 seconds...
+2025-07-08 12:19:04 - pentest_agent.winrm_client - WARNING - Command failed (Status 1): systeminfo | findstr /B /C:"OS Name" /C:"OS Versio... StdErr: 
+2025-07-08 12:19:04 - pentest_agent.winrm_client - INFO - Retrying in 4 seconds...
+2025-07-08 12:19:10 - pentest_agent.winrm_client - WARNING - Command failed (Status 1): systeminfo | findstr /B /C:"OS Name" /C:"OS Versio... StdErr: 
+2025-07-08 12:19:10 - pentest_agent.winrm_client - ERROR - Command failed after 3 attempts: systeminfo | findstr /B /C:"OS Name" /C:"OS Version"...
+2025-07-08 12:19:12 - pentest_agent.agent - INFO - 🔍 Analyzing installed software and services...
+2025-07-08 12:19:42 - pentest_agent.agent - INFO - 🔍 Analyzing network configuration...
+2025-07-08 12:19:42 - pentest_agent.agent - ERROR - ❌ Unexpected error: 'ContextAnalyzer' object has no attribute '_parse_listening_ports'
+Traceback (most recent call last):
+  File "/home/ihab/PenAi-Windows/pentest_agent/agent.py", line 348, in run
+    self._execute_reconnaissance_phase()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/ihab/PenAi-Windows/pentest_agent/agent.py", line 380, in _execute_reconnaissance_phase
+    network_vectors = self.analyzer.analyze_network_configuration()
+  File "/home/ihab/PenAi-Windows/pentest_agent/agent.py", line 175, in analyze_network_configuration
+    listening_ports = self._parse_listening_ports(result['stdout'])
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ContextAnalyzer' object has no attribute '_parse_listening_ports'

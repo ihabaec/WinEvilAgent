@@ -1,0 +1,92 @@
+methods:
+  - name: "Privileged Token Rights"
+    category: "privilege_abuse"
+    description: "Check for dangerous Se* privileges that can be exploited"
+    command: "whoami /priv"
+    indicators: ["SeDebugPrivilege", "SeBackupPrivilege", "SeTakeOwnershipPrivilege"]
+    priority: 1
+
+  - name: "Admin Group Membership"
+    category: "group_membership"
+    description: "Check if user belongs to Administrators group"
+    command: "whoami /groups"
+    indicators: ["Administrators", "BUILTIN\\Administrators"]
+    priority: 1
+
+  - name: "Unquoted Service Path"
+    category: "service_misconfiguration"
+    description: "Look for services with unquoted paths and writable directories"
+    command: >
+      wmic service get name,displayname,pathname,startmode | 
+      findstr /i "auto" | 
+      findstr /i /v "c:\\windows\\"
+    indicators: ["Program Files", "Unquoted path"]
+    priority: 2
+
+  - name: "Weak Folder Permissions"
+    category: "file_permissions"
+    description: "Check for weak ACLs on root or program folders"
+    command: "icacls C:\\ /T"
+    indicators: ["Everyone:(F)", "Users:(F)"]
+    priority: 3
+
+  - name: "Modifiable Services"
+    category: "service_permissions"
+    description: "Find services where user has permission to reconfigure"
+    command: "accesschk.exe -uwcqv \"user\" *"
+    indicators: ["SERVICE_ALL_ACCESS", "WRITE_DAC"]
+    priority: 2
+
+  - name: "DLL Hijacking Paths"
+    category: "dll_injection"
+    description: "Identify directories in PATH where user can write"
+    command: "echo %PATH%"
+    indicators: ["C:\\", "write"]
+    priority: 3
+
+  - name: "Registry Auto-Run Hijack"
+    category: "registry_autorun"
+    description: "Detect autorun registry keys for persistence or escalation"
+    command: "reg query HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+    indicators: ["REG_SZ"]
+    priority: 3
+
+  - name: "AlwaysInstallElevated"
+    category: "msi_privilege_escalation"
+    description: "Check if MSI files can be run with elevated privileges"
+    command: >
+      reg query HKCU\\Software\\Policies\\Microsoft\\Windows\\Installer &&
+      reg query HKLM\\Software\\Policies\\Microsoft\\Windows\\Installer
+    indicators: ["AlwaysInstallElevated"]
+    priority: 3
+
+  - name: "Writable Services Executables"
+    category: "service_exec_path"
+    description: "Identify services with writable executable paths"
+    command: >
+      wmic service get name,pathname | 
+      findstr /i /v "C:\\Windows" | 
+      findstr /i ".exe"
+    indicators: [".exe", "C:\\Program Files"]
+    priority: 3
+
+  - name: "Startup Folder Abuse"
+    category: "persistence"
+    description: "Check if user can write to another user’s Startup folder"
+    command: "icacls \"C:\\Users\\All Users\\Start Menu\\Programs\\Startup\""
+    indicators: ["Everyone", "Users"]
+    priority: 4
+
+  - name: "Credential Harvest (LSASS)"
+    category: "credential_dump"
+    description: "Check if LSASS process is accessible"
+    command: "tasklist /fi \"imagename eq lsass.exe\" /v"
+    indicators: ["lsass.exe"]
+    priority: 5
+
+  - name: "SAM Registry Access"
+    category: "credential_dump"
+    description: "Check if SAM hive can be read"
+    command: "reg save HKLM\\SAM C:\\sam.bak"
+    indicators: ["SAM"]
+    priority: 5
