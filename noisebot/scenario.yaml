@@ -1,0 +1,60 @@
+name: "weekday-ops-like"
+alert_rate_sla_per_hour: 60-90
+cooldown_seconds: "5-20"
+burst:
+  probability: 0.25
+  size_range: "2-4"
+  caps:
+  smb_auth_fail: 15
+  service_create_delete: 6
+  dns_burst: 6
+  powershell_encoded: 30
+  process_masquerade: 24
+  techniques:
+    - name: process_masquerade
+      weight: 4
+      params:
+        images: ["mimikatz.exe","procdump.exe","psexec.exe","rubeus.exe"]
+    - name: powershell_encoded
+      weight: 5
+    - name: download_certutil
+      weight: 3
+      params:
+        url: "http://127.0.0.1:8080/benign.bin"
+    - name: smb_auth_fail
+      weight: 3
+      params:
+        users: ["decoy1","decoy2","doesnotexist"]
+        domain: "LAB"
+        target: "127.0.0.1"
+        attempts_per_burst: "2-4"
+    - name: wmi_exec_local
+      weight: 2
+    - name: service_create_delete
+      weight: 2
+    - name: registry_runkey
+      weight: 2
+    - name: schtask_once
+      weight: 2
+    - name: dns_burst
+      weight: 2
+    - name: staging_archive
+      weight: 1
+    - name: download_to_downloads_motw
+      weight: 2
+    - name: zip_download_and_extract
+      weight: 2
+    - name: mshta_benign
+      weight: 1
+    - name: regsvr32_benign
+      weight: 1
+    - name: rundll32_benign
+      weight: 1
+    - name: office_open_docm
+      weight: 2
+    - name: create_suspicious_lnk
+      weight: 2
+    - name: fake_installer_run
+      weight: 1
+    - name: eicar_zip_download_extract
+      weight: 2
